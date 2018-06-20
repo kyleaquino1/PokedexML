@@ -11,6 +11,8 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import AVFoundation
+
 
 class PokemonController {
     func requestPokemon(url: String) {
@@ -27,8 +29,9 @@ class PokemonController {
                 print("Data: \(utf8Text)") // original server data as UTF8 string
                 do {
                     let json = try! JSON(data: data)
-                    if let captureRate = json["capture_rate"].int {
-                        print("Capture Rate: \(captureRate)")
+                    if let flavorText = json["flavor_text_entries"][2]["flavor_text"].string {
+                        print("Flavor Text: \(flavorText)")
+
                     }
                 }
             }
