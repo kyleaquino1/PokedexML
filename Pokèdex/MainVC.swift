@@ -20,15 +20,18 @@ class MainVC: UIViewController {
     var imageView: UIImageView!
     let pokemonController = PokemonController()
     var pokemonFound: Pokemon?
+    var pokedex = PokedexVC()
    
     
     override func viewDidLoad() {
+        print("\(view.frame.width), \(view.frame.height)")
         super.viewDidLoad()
         classifier = ClassificationController(delegate: self)
         addCamera()
         addImagePreview()
         addNoPokemonLabel()
         NotificationCenter.default.addObserver(self, selector: #selector(presentPopup), name: NSNotification.Name.presentPokemon, object: nil)
+        self.present(pokedex, animated: true, completion: nil)
         
     }
     

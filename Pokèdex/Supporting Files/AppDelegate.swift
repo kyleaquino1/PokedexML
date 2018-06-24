@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        window?.rootViewController = MainVC()
+        window?.rootViewController = PokedexVC()
         return true
     }
 

@@ -48,5 +48,9 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SunandMoon.ttf</string>
+	</array>
 </dict>
 </plist>

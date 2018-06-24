@@ -33,7 +33,7 @@ class DescriptionVC: UIViewController, UIGestureRecognizerDelegate {
     
     init(pokemon: Pokemon) {
         self.pokemon = pokemon
-        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 75, height: 75))
         imageView.load(url: pokemon.imgURL)
         flavorTextLabel = UILabel()
         nameLabel = UILabel()
@@ -90,8 +90,8 @@ class DescriptionVC: UIViewController, UIGestureRecognizerDelegate {
     private func setupImageView() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 100),
-            imageView.widthAnchor.constraint(equalToConstant: 100),
+            imageView.heightAnchor.constraint(equalToConstant: 75 ),
+            imageView.widthAnchor.constraint(equalToConstant: 75 ),
             imageView.leadingAnchor.constraint(equalTo: holderView.leadingAnchor, constant: 16),
             imageView.topAnchor.constraint(equalTo: holderView.topAnchor, constant: 16)
             ])
@@ -104,7 +104,10 @@ class DescriptionVC: UIViewController, UIGestureRecognizerDelegate {
         flavorTextLabel.textColor = .black
         flavorTextLabel.numberOfLines = 0
         flavorTextLabel.sizeToFit()
-        flavorTextLabel.font = UIFont(name: "Helvetica-nue", size: 15)
+        guard let pokemonFont = UIFont(name: "Sun-Moon", size: 15) else { print("Could not load font")
+            return
+        }
+        flavorTextLabel.font = pokemonFont
         flavorTextLabel.textAlignment = .center
         
         NSLayoutConstraint.activate([
