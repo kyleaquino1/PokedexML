@@ -7,14 +7,19 @@
 //
 
 import UIKit
+import AVFoundation
 
 class MainVC: UIViewController {
 
     let cameraController = CameraVC()
+    lazy var loadVC = LoadingVC()
+    lazy var synth = AVSpeechSynthesizer()
+    lazy var noPokemonLabel = UILabel()
     var classifier: ClassificationController!
     var cameraView: UIView!
     var imageView: UIImageView!
     let pokemonController = PokemonController()
+    var pokemonFound: Pokemon?
    
     
     override func viewDidLoad() {
@@ -22,6 +27,20 @@ class MainVC: UIViewController {
         classifier = ClassificationController(delegate: self)
         addCamera()
         addImagePreview()
+        addNoPokemonLabel()
+        NotificationCenter.default.addObserver(self, selector: #selector(presentPopup), name: NSNotification.Name.presentPokemon, object: nil)
+        
+    }
+    
+    @objc func presentPopup(notification: Notification) {
+        loadVC.remove()
+        let pokemonController = notification.object as! PokemonController
+        pokemonFound?.flavorText = pokemonController.flavorText
+        let popup = DescriptionVC(pokemon: pokemonFound!)
+        //print(pokemonFound?.flavorText!)
+        popup.isModalInPopover = true
+        popup.modalPresentationStyle = .overCurrentContext
+        self.present(popup, animated: true, completion: nil)
     }
     
     private func addCamera() {
@@ -45,7 +64,7 @@ class MainVC: UIViewController {
     private func addImagePreview() {
         imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 50))
         imageView.backgroundColor = .gray
-        imageView.layer.opacity = 0.20
+        imageView.layer.opacity = 0.50
         self.cameraView.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -64,6 +83,31 @@ class MainVC: UIViewController {
     private func evaluateImage(_ image: UIImage) {
         classifier.updateClassifications(for: image)
     }
+    
+    func speakText(_ text: String) {
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.rate = 0.4
+        synth.speak(utterance)
+    }
+    
+    private func addNoPokemonLabel() {
+        noPokemonLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(noPokemonLabel)
+        noPokemonLabel.isHidden = true
+        noPokemonLabel.text = "NO POKEMON DETECTED"
+        noPokemonLabel.textColor = .black
+        noPokemonLabel.numberOfLines = 1
+        noPokemonLabel.sizeToFit()
+        noPokemonLabel.font = UIFont(name: "Helvetica-nue", size: 24)
+        noPokemonLabel.textAlignment = .center
+        
+        NSLayoutConstraint.activate([
+            noPokemonLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noPokemonLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            noPokemonLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            noPokemonLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 12)
+            ])
+    }
 
 
 
@@ -73,13 +117,19 @@ extension MainVC: ClassificationControllerDelegate {
     func didFinishClassification(_ classification: (String, Float)) {
         print("Finished Classification \(classification.0) \(classification.1)")
         if classification.1 > 0.60 {
+            add(loadVC)
+            noPokemonLabel.isHidden = true
             for pokemon in PokemonType.allCases {
                 if classification.0 == pokemon.rawValue {
                     let foundPokemon = Pokemon(name: pokemon.rawValue, id: pokemon.id)
                     print("name: \(foundPokemon.name) id: \(foundPokemon.id)")
-                    pokemonController.requestPokemon(url: foundPokemon.descURL)
+                    let flavorText: String = pokemonController.getDescription(url: foundPokemon.descURL)
+                    foundPokemon.flavorText = flavorText
+                    self.pokemonFound = foundPokemon
                 }
             }
+        } else {
+            noPokemonLabel.isHidden = false
         }
     }
 }

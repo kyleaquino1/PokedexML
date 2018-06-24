@@ -51,11 +51,14 @@ class Pokemon {
     let id: Int
     let baseURL: String
     let descURL: String
+    let imgURL: URL
+    var flavorText: String?
     
     init(name: String, id: Int) {
-        self.name = name
+        self.name = name.capitalized
         self.id = id
         self.baseURL = "http://pokeapi.co/api/v2/pokemon/\(id)/"
         self.descURL = "http://pokeapi.co/api/v2/pokemon-species/\(id)/"
+        self.imgURL  = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(id).png")!
     }
 }

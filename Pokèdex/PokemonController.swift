@@ -13,39 +13,34 @@ import Alamofire
 import SwiftyJSON
 import AVFoundation
 
-
 class PokemonController {
-    func requestPokemon(url: String) {
+    var flavorText = ""
+    func requestImage(url: String) {}
+    
+    func getDescription(url: String) -> String {
+        var flavorTextFinal = ""
         Alamofire.request(url).responseJSON { response in
-            print("Request: \(String(describing: response.request))")   // original url request
-            print("Response: \(String(describing: response.response))") // http url response
-            print("Result: \(response.result)")                         // response serialization result
-
-            if let json = response.result.value {
-                print("JSON: \(json)") // serialized json response
-            }
-            
-            if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
-                print("Data: \(utf8Text)") // original server data as UTF8 string
+            if let data = response.data {
                 do {
                     let json = try! JSON(data: data)
-                    if let flavorText = json["flavor_text_entries"][2]["flavor_text"].string {
-                        print("Flavor Text: \(flavorText)")
-
+                    
+                    if let arrOfThings = json["flavor_text_entries"].array {
+                        for (subJson):(JSON) in arrOfThings {
+                            if subJson["language"]["name"].string == "en" {
+                                if let flavorText = subJson["flavor_text"].string {
+                                    flavorTextFinal = flavorText
+                                    self.flavorText = flavorText
+                                    print(flavorText)
+                                    NotificationCenter.default.post(name: .presentPokemon, object: self)
+                                    return
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+        return flavorTextFinal
     }
-    
-    func getDescription(url: String) {
-//        Alamofire.request(url).responseJSON { (response) in
-//            if let json = response.result.value {
-//                if let
-//            }
-//        }
-    }
-    
-    
 }
 
