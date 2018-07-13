@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum PokemonType: String, CaseIterable {
     case bulbasaur = "bulbasaur"
@@ -53,6 +54,7 @@ class Pokemon {
     let descURL: String
     let imgURL: URL
     var flavorText: String?
+    var image: UIImage?
     
     init(name: String, id: Int) {
         self.name = name.capitalized

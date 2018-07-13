@@ -20,7 +20,7 @@ class MainVC: UIViewController {
     var imageView: UIImageView!
     let pokemonController = PokemonController()
     var pokemonFound: Pokemon?
-    var pokedex = PokedexVC()
+    lazy var pokedex = PokedexVC()
    
     
     override func viewDidLoad() {
@@ -30,20 +30,26 @@ class MainVC: UIViewController {
         addCamera()
         addImagePreview()
         addNoPokemonLabel()
-        NotificationCenter.default.addObserver(self, selector: #selector(presentPopup), name: NSNotification.Name.presentPokemon, object: nil)
-        self.present(pokedex, animated: true, completion: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(openPokedex), name: NSNotification.Name.presentPokemon, object: nil)
     }
     
-    @objc func presentPopup(notification: Notification) {
-        loadVC.remove()
+    
+    @objc func openPokedex(notification: Notification) {
         let pokemonController = notification.object as! PokemonController
         pokemonFound?.flavorText = pokemonController.flavorText
-        let popup = DescriptionVC(pokemon: pokemonFound!)
-        //print(pokemonFound?.flavorText!)
-        popup.isModalInPopover = true
-        popup.modalPresentationStyle = .overCurrentContext
-        self.present(popup, animated: true, completion: nil)
+        if pokemonController.pokemonImage != nil {
+            pokemonFound?.image = pokemonController.pokemonImage!
+        }
+        pokedex.pokemon = pokemonFound
+        print("Loaded Pokemon! \(pokemonFound)")
+        loadVC.remove()
+        pokedex.loadData()
+        pokedex.openPokedex()
+    }
+    
+    func presentPokedex() {
+        pokedex.modalPresentationStyle = .overCurrentContext
+        self.present(pokedex, animated: true, completion: nil)
     }
     
     private func addCamera() {
@@ -120,14 +126,16 @@ extension MainVC: ClassificationControllerDelegate {
     func didFinishClassification(_ classification: (String, Float)) {
         print("Finished Classification \(classification.0) \(classification.1)")
         if classification.1 > 0.60 {
-            add(loadVC)
+//            add(loadVC)
+            presentPokedex()
+            pokedex.add(loadVC)
             noPokemonLabel.isHidden = true
             for pokemon in PokemonType.allCases {
                 if classification.0 == pokemon.rawValue {
                     let foundPokemon = Pokemon(name: pokemon.rawValue, id: pokemon.id)
                     print("name: \(foundPokemon.name) id: \(foundPokemon.id)")
-                    let flavorText: String = pokemonController.getDescription(url: foundPokemon.descURL)
-                    foundPokemon.flavorText = flavorText
+                    pokemonController.getPokemonData(for: foundPokemon)
+                    //foundPokemon.flavorText = flavorText
                     self.pokemonFound = foundPokemon
                 }
             }
