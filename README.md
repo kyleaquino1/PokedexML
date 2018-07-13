@@ -9,7 +9,7 @@ PokedexML is a simple app that you can use to take pictures of pokemon and view 
 
 Simply put the pokemon of choice in the center of the screen and tap the screen to take a photo to be classified. The pokedex will come up if the confidence is 60% or higher.
 
-![Imgur](https://i.imgur.com/ZMF3KNj.gifv)
+![Imgur](https://i.imgur.com/ZMF3KNj.gif)
 
 
 ## Technologies Used
