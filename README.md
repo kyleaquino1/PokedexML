@@ -1,11 +1,18 @@
 # PokedexML
-## A side project app to test out Apple's New CreateML framework
+### A side project app to test out Apple's New CreateML framework
 
-### Overview
+## Overview
+
+PokedexML is a simple app that you can use to take pictures of pokemon and view their Pokedex entry. It uses a custom machine learning model created with the new CreateML framework in Xcode Playgrounds. 
+
+### How To Use
+
+Simply put the pokemon of choice in the center of the screen and tap the screen to take a photo to be classified. The pokedex will come up if the confidence is 60% or higher.
+
+[Imgur](https://i.imgur.com/ZMF3KNj.gifv)
 
 
-
-### Technologies Used
+## Technologies Used
 * CreateML
 * CoreML
 * Vision
