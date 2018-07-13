@@ -1,11 +1,11 @@
 # PokedexML
-### A side project app to test out Apple's New CreateML framework
+## A side project app to test out Apple's New CreateML framework
 
-## Overview
+### Overview
 
 
 
-## Technologies Used
+### Technologies Used
 * CreateML
 * CoreML
 * Vision
